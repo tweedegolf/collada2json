@@ -1,0 +1,19 @@
+{
+  "name": "glTF-tester",
+  "private": true,
+  "devDependencies": {
+    "babelify": ">=4.0.0",
+    "browserify": ">=8.1.1",
+    "exorcist": "^0.1.6",
+    "local-web-server": "^0.5.16",
+    "watchify": ">=1.0.1"
+  },
+  "engines": {
+    "node": "0.10.x"
+  },
+  "scripts": {
+    "start": "qs -b index.html",
+    "build": "browserify js/main.js -t [ babelify --sourceMapRelative ./js ] --debug | exorcist build/build.js.map > build/build.js ",
+    "watch": "watchify js/* -t babelify -o build/build.js --debug --verbose"
+  }
+}
