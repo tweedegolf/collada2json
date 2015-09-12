@@ -61,9 +61,9 @@ export default function createLoader(){
     let file;
 
     if(++currentIndex >= numFiles){
-      console.log(colladas.size, textures.size);
+      //console.log(colladas.size, textures.size);
       colladaMethods.parse(colladas, textures);
-      console.log(colladas.size, textures.size);
+      //console.log(colladas.size, textures.size);
       return;
     }
 

@@ -12,14 +12,13 @@ let colladaLoader;
 
 export default function setupColladaMethods(){
   scene3d.init();
-  //scene3d.load('./models/DAE/Fagus_004.DAE', function(){});
+  scene3d.load('./models/DAE/robotmaaier_004.dae', function(){});
   xmlParser = new DOMParser();
   divMessage = document.getElementById('loading');
   return {
     parse: parseColladas
   };
 }
-
 
 function parseColladas(_colladas, _textures){
   colladas = _colladas;
@@ -63,9 +62,10 @@ function parseCollada(){
 
   nodes.forEach(function(node){
     node.textContent = textures.get(imageName);
-    //console.log(node);
+    console.log(textures.get(imageName));
     textures.delete(imageName);
   });
+  //console.log(collada);
 
   colladas.delete(element.value[0]);
 
@@ -75,6 +75,7 @@ function parseCollada(){
   colladaLoader.parse(collada, function(collada){
     divMessage.innerHTML = 'converting ' + element.value[0];
     let model = collada.scene;
+    //console.log(model);
     scene3d.add(model);
     let json = JSON.stringify(model.toJSON());
     saveAs(element.value[0] + '.json', json);

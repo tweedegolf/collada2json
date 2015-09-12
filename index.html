@@ -36,6 +36,14 @@
       font-size: 85%;
       border-bottom: 1px dotted #dddddd;
     }
+    #help2{
+      float: left;
+      padding: 4px;
+      font-size: 85%;
+    }
+    a{
+      /*text-decoration: none;*/
+    }
     ul{
       margin: 2px;
     }
@@ -51,13 +59,16 @@
         <li>untick "Ask where to save each file before downloading"</li>
       </ul>
     </div>
-    <input type="file" id="fileElem" multiple accept="*/*" style="display:none">
-    <a href="#" id="fileSelect">SELECT COLLADAS</a>
-    <div id="loading"></div>
+    <div>
+      <input type="file" id="fileElem" multiple accept="*/*" style="display:none">
+      <a href="#" id="fileSelect">SELECT COLLADAS</a>
+      <div id="loading"></div>
+    </div>
+    <div id="help2">If your colladas use textures, you have to select the textures together with the colladas.</div>
   </div>
   <div id="canvas3d"></div>
 
-  <script src="lib/threejs/three.min.js"></script>
+  <script src="lib/threejs/three.js"></script>
   <script src="lib/threejs/OrbitControls.js"></script>
   <script src="lib/threejs/ColladaLoader.js"></script>
   <script src="build/build.js"></script>

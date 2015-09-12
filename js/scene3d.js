@@ -21,7 +21,7 @@ function init() {
   body = document.body;
   divContainer = document.getElementById('canvas3d');
 
-  renderer = new THREE.WebGLRenderer({autoClear:true});
+  renderer = new THREE.WebGLRenderer({autoClear:true, antialias:true, alpha:true });
   renderer.setClearColor(0xffffff, 1);
   renderer.shadowMapEnabled = true;
   renderer.shadowMapSoft = true;
@@ -39,7 +39,7 @@ function init() {
   camera.lookAt(new THREE.Vector3(0,0,0));
 
   spot = new THREE.SpotLight(0xffffff, 1);
-  spot.position.set(-100, 200, 100);
+  spot.position.set(0, 500, 500);
   spot.target.position.set(0, 0, 0);
   spot.shadowCameraNear = 1;
   spot.shadowCameraFar = 1024;
@@ -50,13 +50,13 @@ function init() {
   spot.shadowMapHeight = 2048;
   scene.add(spot);
 
-  world = new THREE.Mesh(new THREE.PlaneGeometry(200, 200, 20, 20), new THREE.MeshBasicMaterial({wireframe:true, color: 0x000000}));
+  world = new THREE.Mesh(new THREE.PlaneBufferGeometry(200, 200, 20, 20), new THREE.MeshBasicMaterial({wireframe:true, color: 0x000000}));
   world.rotation.x -= Math.PI/2;
   world.position.z = 50;
   world.receiveShadow = true;
   scene.add(world);
 
-  let light = new THREE.HemisphereLight(0x777777, 0x000000, 0.6);
+  let light = new THREE.HemisphereLight(0xffffff, 0x000000, 0.6);
   scene.add(light);
 
   window.addEventListener('resize', resize, false);
@@ -96,7 +96,7 @@ function clear(){
 
 function load(url, callback){
   console.time('loading ' + url + ' took');
-  callback('loading', 'loading ' + url);
+  //callback('loading', 'loading ' + url);
   loader.load(url, function(data){
     if(currentModel !== undefined){
         world.remove(currentModel);
@@ -108,10 +108,35 @@ function load(url, callback){
     world.add(currentModel);
     console.log(world.children);
     console.timeEnd('loading ' + url + ' took');
-    callback('loaded');
+    callback(currentModel);
+    setTexture(function(){});
     render();
   });
 }
+
+function setTexture(callback){
+  // currentTexture = textures[fileName];
+
+  // if(currentTexture){
+    currentModel.traverse(function(child){
+      if(child.material && child.material.map) {
+        console.log(child.material.map);
+        // var img = document.createElement('img');
+        // img.src = currentTexture;
+        // child.material.map.image = img;
+        // child.material.emissive = new THREE.Color(0,0,0);
+        // child.material.map.wrapS = THREE.ClampToEdgeWrapping;
+        // child.material.map.wrapT = THREE.ClampToEdgeWrapping;
+        // child.material.map.minFilter = THREE.LinearFilter;
+        // child.material.needsUpdate = true;
+      }
+    });
+//  }
+
+  callback();
+}
+
+
 
 
 function maximizeScale() {
