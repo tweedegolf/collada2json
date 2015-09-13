@@ -1,21 +1,22 @@
 'use strict';
 
 import setupColladaMethods from './collada_methods.js';
+import getCache from './cache.js';
 
 export default function createLoader(){
 
+  let cache = getCache();
   let fileSelect = document.getElementById('fileSelect');
   let fileElem = document.getElementById('fileElem');
   let fileReader = new FileReader();
-  let textures = new Map();
-  let colladas = new Map();
   let pattern = /\.dae$/i;
   let fileList, numFiles, currentIndex, fileType, fileName;
   let colladaMethods = setupColladaMethods();
-  let divMessage = document.getElementById('loading');
+  let divMessage = document.getElementById('message');
 
 
   fileElem.onchange = function(e){
+    cache.clear();
     fileList = e.target.files;
     numFiles = fileList.length;
     currentIndex = -1;
@@ -48,9 +49,9 @@ export default function createLoader(){
 
   fileReader.addEventListener('load', function(){
     if(fileType === 'image'){
-      textures.set(fileName, fileReader.result);
+      cache.addTexture(fileName, fileReader.result);
     }else if(fileType === 'xml'){
-      colladas.set(fileName, fileReader.result);
+      cache.addCollada(fileName, fileReader.result);
     }
 
     loadFile();
@@ -61,9 +62,7 @@ export default function createLoader(){
     let file;
 
     if(++currentIndex >= numFiles){
-      //console.log(colladas.size, textures.size);
-      colladaMethods.parse(colladas, textures);
-      //console.log(colladas.size, textures.size);
+      colladaMethods.parse();
       return;
     }
 
@@ -81,7 +80,5 @@ export default function createLoader(){
     }else{
       loadFile();
     }
-
-    fileName = fileName.substring(0, fileName.indexOf('.'));
   }
 }

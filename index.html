@@ -21,7 +21,7 @@
     #controls{
       position: absolute;
     }
-    #loading{
+    #message{
       background-color: black;
       color: white;
       padding: 4px;
@@ -47,6 +47,16 @@
     ul{
       margin: 2px;
     }
+    #canvas_collada{
+      background-color: red;
+      width: 50%;
+      float: left;
+    }
+    #canvas_json{
+      background-color: blue;
+      width: 50%;
+      float: left;
+    }
   </style>
 </head>
 <body>
@@ -62,15 +72,17 @@
     <div>
       <input type="file" id="fileElem" multiple accept="*/*" style="display:none">
       <a href="#" id="fileSelect">SELECT COLLADAS</a>
-      <div id="loading"></div>
+      <div id="message"></div>
     </div>
     <div id="help2">If your colladas use textures, you have to select the textures together with the colladas.</div>
   </div>
-  <div id="canvas3d"></div>
+  <div id="canvas_collada"></div>
+  <div id="canvas_json"></div>
 
   <script src="lib/threejs/three.js"></script>
   <script src="lib/threejs/OrbitControls.js"></script>
   <script src="lib/threejs/ColladaLoader.js"></script>
+  <script src="lib/threejs/ObjectLoader2.js"></script>
   <script src="build/build.js"></script>
 </body>
 </html>
