@@ -27,13 +27,16 @@ window.onload = function(){
         divMessage.innerHTML = 'converting ' + e.detail.model;
         break;
       case 'ready':
-        //divMessage.innerHTML = e.detail.model + ' converted';
+        divMessage.innerHTML = e.detail.model + ' converted';
         cache = getCache();
         sceneJson.add(cache.getJsonModel(e.detail.model));
         sceneCollada.add(cache.getColladaModel(e.detail.model));
         break;
       case 'done':
         divMessage.innerHTML = 'done';
+        sceneJson.clear();
+        sceneCollada.clear();
+        cache.clear();
         break;
     }
   });

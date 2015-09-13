@@ -203,7 +203,13 @@ function addJsonModel(colladaName, json){
     // clear cache
     jsonModels.delete(colladaName);
     colladaModels.delete(colladaName);
-    console.log(jsonModels.size,colladaModels.size);
+    THREE.Cache.clear();
+    colladaImages.forEach(function(image, imageName){
+      textures.delete(imageName);
+    })
+    colladaImages.clear();
+    colladaTextures.clear();
+    console.log(jsonModels.size,colladaModels.size, textures.size);
     json = null;
     parseCollada();
   }, 10);
