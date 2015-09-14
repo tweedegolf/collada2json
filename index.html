@@ -3,67 +3,29 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-  <title>collada to json converter</title>
-  <style>
-    html{
-      height: 100%;
-    }
-    body {
-      margin: 0px;
-      overflow: hidden;
-      font-family: sans-serif;
-      font-size: 15px;
-      height: 100%;
-      background-color: #eee;
-    }
-    #container{
-      max-width: 768px;
-      margin: 0 auto;
-      background-color: #fff;
-    }
-    #messages{
-      padding: 8px;
-      max-height: 600px;
-    }
-    #fileSelect{
-      padding: 4px;
-    }
-    #help{
-      padding: 4px;
-      border-bottom: 1px dotted #dddddd;
-    }
-    #input{
-      width: 100%;
-      padding: 4px;
-      text-align: center;
-    }
-    #input > p{
-      text-align: center;
-    }
-    a{
-      font-size: 120%;
-      font-weight: bold;
-    }
-    ul{
-      margin: 2px;
-    }
-  </style>
+  <title>Collada to JSON converter</title>
+  <link rel="stylesheet" href="./css/reset.css"/>
+  <link rel="stylesheet" href="./css/app.css"/>
 </head>
 <body>
   <div id="container">
-    <div id="help">To be able to save the converted json files automatically:
+    <h2>Collada to JSON converter</h2>
+    <p>With this tool you can convert Collada models to Threejs' own JSON format. The JSON format is not only much smaller in file size (50 - 75% smaller), it is also easier and thus faster to parse by Threejs.
+
+    </p>
+    <p>To be able to save the converted JSON files automatically:
       <ul>
         <li>navigate to chrome://settings</li>
         <li>click "advanced settings" and scroll down to the "Downloads" section</li>
         <li>untick "Ask where to save each file before downloading"</li>
-        <li>You might get the message "This site wants to download multiple files", click "Allow"</li>
+        <li>you might get the message "This site wants to download multiple files", click "Allow"</li>
       </ul>
-    </div>
-    <div id="input">
+    </p>
+    <p id="input">
       <input type="file" id="fileElem" multiple accept="*/*" style="display:none"></input>
-      <p><a href="#" id="fileSelect">SELECT COLLADAS</a></p>
-    </div>
-    <div id="messages"></div>
+      <a href="#" id="fileSelect">SELECT COLLADAS</a>
+    </p>
+    <p id="messages">_</p>
   </div>
 
   <script src="lib/threejs/three.js"></script>
