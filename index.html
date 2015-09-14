@@ -14,70 +14,57 @@
       font-family: sans-serif;
       font-size: 15px;
       height: 100%;
+      background-color: #eee;
     }
-    #canvas3d {
-      height: 100%;
+    #container{
+      max-width: 768px;
+      margin: 0 auto;
+      background-color: #fff;
     }
-    #controls{
-      position: absolute;
-    }
-    #message{
-      background-color: black;
-      color: white;
-      padding: 4px;
-      float: right;
+    #messages{
+      padding: 8px;
+      max-height: 600px;
     }
     #fileSelect{
       padding: 4px;
-      float: left;
     }
     #help{
       padding: 4px;
-      font-size: 85%;
       border-bottom: 1px dotted #dddddd;
     }
-    #help2{
-      float: left;
+    #input{
+      width: 100%;
       padding: 4px;
-      font-size: 85%;
+      text-align: center;
+    }
+    #input > p{
+      text-align: center;
     }
     a{
-      /*text-decoration: none;*/
+      font-size: 120%;
+      font-weight: bold;
     }
     ul{
       margin: 2px;
     }
-    #canvas_collada{
-      background-color: red;
-      width: 50%;
-      float: left;
-    }
-    #canvas_json{
-      background-color: blue;
-      width: 50%;
-      float: left;
-    }
   </style>
 </head>
 <body>
-  <div id="controls">
-    <div id="help">
-      To be able to save the converted json files automatically:
+  <div id="container">
+    <div id="help">To be able to save the converted json files automatically:
       <ul>
         <li>navigate to chrome://settings</li>
         <li>click "advanced settings" and scroll down to the "Downloads" section</li>
         <li>untick "Ask where to save each file before downloading"</li>
+        <li>You might get the message "This site wants to download multiple files", click "Allow"</li>
       </ul>
     </div>
-    <div>
-      <input type="file" id="fileElem" multiple accept="*/*" style="display:none">
-      <a href="#" id="fileSelect">SELECT COLLADAS</a>
-      <div id="message"></div>
+    <div id="input">
+      <input type="file" id="fileElem" multiple accept="*/*" style="display:none"></input>
+      <p><a href="#" id="fileSelect">SELECT COLLADAS</a></p>
     </div>
-    <div id="help2">If your colladas use textures, you have to select the textures together with the colladas.</div>
+    <div id="messages"></div>
   </div>
-  <div id="canvas_collada"></div>
-  <div id="canvas_json"></div>
 
   <script src="lib/threejs/three.js"></script>
   <script src="lib/threejs/OrbitControls.js"></script>

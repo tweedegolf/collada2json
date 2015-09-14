@@ -1,6 +1,6 @@
 'use strict';
 
-import setupColladaMethods from './collada_methods.js';
+import setupConverter from './converter.js';
 import getCache from './cache.js';
 
 export default function createLoader(){
@@ -10,9 +10,9 @@ export default function createLoader(){
   let fileElem = document.getElementById('fileElem');
   let fileReader = new FileReader();
   let pattern = /\.dae$/i;
-  let fileList, numFiles, currentIndex, fileType, fileName;
-  let colladaMethods = setupColladaMethods();
-  let divMessage = document.getElementById('message');
+  let fileList, numFiles, currentIndex, fileType, fileName, numModels = 0;
+  let converter = setupConverter();
+  let divMessages = document.getElementById('messages');
 
 
   fileElem.onchange = function(e){
@@ -21,21 +21,6 @@ export default function createLoader(){
     numFiles = fileList.length;
     currentIndex = -1;
     loadFile();
-
-    /*
-    let files = e.target.files;
-    let patternCollada = /\.dae$/;
-    let patternTexture = /(\.png|\.jpg)$/;
-
-    Object.keys(files).forEach(function(key){
-      let file = files[key];
-      if(patternCollada.test(file.name)){
-        colladas.set(file.name, file);
-      }else if(patternTexture.test(file.name)){
-        textures.set(file.name, file);
-      }
-    });
-    */
   };
 
 
@@ -48,12 +33,9 @@ export default function createLoader(){
 
 
   fileReader.addEventListener('load', function(){
-    if(fileType === 'image'){
-      cache.addTexture(fileName, fileReader.result);
-    }else if(fileType === 'xml'){
+    if(fileType === 'xml'){
       cache.addCollada(fileName, fileReader.result);
     }
-
     loadFile();
   }, false);
 
@@ -62,19 +44,26 @@ export default function createLoader(){
     let file;
 
     if(++currentIndex >= numFiles){
-      colladaMethods.parse();
+      if(numModels === 0){
+        divMessages.innerHTML = 'no models to convert';
+        return;
+      }else if(numModels === 1){
+        divMessages.innerHTML = `start converting ${numModels} model`;
+      }else if(numModels > 1){
+        divMessages.innerHTML = `start converting ${numModels} models`;
+      }
+      converter.parse();
       return;
     }
 
     file = fileList[currentIndex];
     fileName = file.name;
     fileType = file.type;
-    divMessage.innerHTML = 'loading ' + fileName;
 
-    if(fileType.indexOf('image') !== -1){
-      fileType = 'image';
-      fileReader.readAsDataURL(file);
-    }else if(pattern.test(fileName)){
+    divMessages.innerHTML = `loading ${fileName} (${currentIndex+1} of ${numFiles})`;
+
+    if(pattern.test(fileName)){
+      numModels++;
       fileType = 'xml';
       fileReader.readAsText(file);
     }else{
