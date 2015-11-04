@@ -13,7 +13,7 @@
   },
   "scripts": {
     "start": "qs -b index.html",
-    "build": "browserify js/appp.js -t [ babelify --sourceMapRelative ./js ] --debug | exorcist build/build.js.map > build/build.js ",
+    "build": "browserify js/app.js -t [ babelify --sourceMapRelative ./js ] --debug | exorcist build/build.js.map > build/build.js ",
     "watch": "watchify js/* -t babelify -o build/build.js --debug --verbose"
   }
 }
