@@ -34,8 +34,8 @@ window.onload = function(){
         break;
       case 'done':
         divMessage.innerHTML = 'done';
-        sceneJson.clear();
-        sceneCollada.clear();
+        //sceneJson.clear();
+        //sceneCollada.clear();
         cache.clear();
         break;
     }

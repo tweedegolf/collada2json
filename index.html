@@ -57,6 +57,17 @@
       width: 50%;
       float: left;
     }
+    .canvas-label{
+      width: 50%;
+      position: absolute;
+      bottom: 40px;
+      font-weight: bold;
+      font-size: 20px;
+      text-align: center;
+    }
+    .canvas-label-right{
+      right: 0px;
+    }
   </style>
 </head>
 <body>
@@ -78,6 +89,8 @@
   </div>
   <div id="canvas_collada"></div>
   <div id="canvas_json"></div>
+  <div class="canvas-label">Collada</div>
+  <div class="canvas-label canvas-label-right">JSON</div>
 
   <script src="lib/threejs/three.js"></script>
   <script src="lib/threejs/OrbitControls.js"></script>
