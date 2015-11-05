@@ -1,5 +1,5 @@
 {
-  "name": "collada to json converter",
+  "name": "collada-to-json-converter",
   "private": true,
   "devDependencies": {
     "babelify": ">=4.0.0",
@@ -14,6 +14,6 @@
   "scripts": {
     "start": "ws",
     "build": "browserify js/app.js -t [ babelify --sourceMapRelative ./js ] --debug | exorcist build/build.js.map > build/build.js ",
-    "watch": "watchify js/* -t babelify -o build/build.js --debug --verbose"
+    "watch": "watchify js/* -t babelify -o build/build.js --debug --verbose | ws"
   }
 }
