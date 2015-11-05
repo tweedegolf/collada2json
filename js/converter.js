@@ -116,7 +116,7 @@ function addTextures(json){
 
   let images = [];
   colladaImages.forEach(function(image, name){
-    //console.log('name:',name, image);
+    //console.log(name, image);
     images.push({
       url: name,
       name: name,
