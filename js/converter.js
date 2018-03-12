@@ -10,11 +10,12 @@ let colladaTextures;
 let xmlParser;
 let iterator;
 let cache;
-let baseUrl;
+let baseUrl = '';
 let divMessages;
 
 
 export default function setupConverter() {
+  THREE.Cache.enabled = true;
   colladaLoader = new THREE.ColladaLoader();
   divMessages = document.getElementById('messages');
   xmlParser = new DOMParser();
@@ -90,6 +91,7 @@ function parseCollada(i) {
     colladaModels.set(colladaName, model);
     let json = model.toJSON();
     console.log(json);
+
     if (hasTextures(model)) {
       json = addTextures(json);
     }
@@ -120,7 +122,6 @@ function addTextures(json) {
 
   let images = [];
   colladaImages.forEach(function (image, name) {
-    //console.log(name, image);
     images.push({
       url: name,
       name: name,
@@ -130,27 +131,29 @@ function addTextures(json) {
 
   let textures = [];
   colladaTextures.forEach(function (texture, uuid) {
-    console.log(uuid, texture);
-    let obj = {
-      uuid: texture.uuid,
-      image: texture.image.uuid
-    };
-    if (texture.repeat) {
-      obj.repeat = [texture.repeat.x, texture.repeat.y];
+    if (texture.image) {
+      let obj = {
+        uuid: texture.uuid,
+        image: texture.image.uuid
+      };
+      if (texture.repeat) {
+        obj.repeat = [texture.repeat.x, texture.repeat.y];
+      }
+      if (texture.minFilter) {
+        obj.minFilter = threeConstants[texture.minFilter];
+      }
+      if (texture.magFilter) {
+        obj.magFilter = threeConstants[texture.magFilter];
+      }
+      if (texture.anisotropy) {
+        obj.anisotropy = texture.anisotropy;
+      }
+      if (texture.wrapS) {
+        obj.wrap = [threeConstants[texture.wrapS], threeConstants[texture.wrapT]];
+      }
+      console.log(obj, textures);
+      textures.push(obj);
     }
-    if (texture.minFilter) {
-      obj.minFilter = threeConstants[texture.minFilter];
-    }
-    if (texture.magFilter) {
-      obj.magFilter = threeConstants[texture.magFilter];
-    }
-    if (texture.anisotropy) {
-      obj.anisotropy = texture.anisotropy;
-    }
-    if (texture.wrapS) {
-      obj.wrap = [threeConstants[texture.wrapS], threeConstants[texture.wrapT]];
-    }
-    textures.push(obj);
   });
 
   json.images = images;
@@ -174,6 +177,7 @@ function hasTextures(model) {
     } else if (child.material && child.material.materials) {
       child.material.materials.forEach(material => {
         if (material.map) {
+          // console.log(colladaTextures.has(material.uuid), material.uuid, material.map);
           if (colladaTextures.has(material.uuid) === false) {
             colladaTextures.set(material.uuid, material.map);
           }
