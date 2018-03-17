@@ -2,6 +2,7 @@
   "name": "collada-to-json-converter",
   "private": true,
   "devDependencies": {
+    "babel-preset-env": "^1.6.1",
     "babelify": ">=4.0.0",
     "browserify": ">=12.0.0",
     "exorcist": ">=0.4.0",
@@ -15,5 +16,11 @@
     "start": "ws",
     "build": "browserify js/app.js -t [ babelify --sourceMapRelative ./js ] --debug | exorcist build/build.js.map > build/build.js ",
     "watch": "watchify js/* -t babelify -o build/build.js --debug --verbose | ws"
+  },
+  "dependencies": {
+    "dom-parser": "^0.1.5",
+    "three": "^0.73.2",
+    "xmldom": "^0.1.27",
+    "xpath": "^0.0.27"
   }
 }
