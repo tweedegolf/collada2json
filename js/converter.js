@@ -14,7 +14,7 @@ let baseUrl;
 let divMessages;
 
 
-export default function setupConverter(){
+export default function setupConverter() {
   colladaLoader = new THREE.ColladaLoader();
   divMessages = document.getElementById('messages');
   xmlParser = new DOMParser();
@@ -25,7 +25,7 @@ export default function setupConverter(){
 
 
 // start parsing all loaded Colladas
-function parseColladas(){
+function parseColladas() {
   cache = getCache();
   colladaModels = cache.getColladas();
   iterator = colladaModels.entries();
@@ -34,14 +34,14 @@ function parseColladas(){
 
 
 // parse one single Collada
-function parseCollada(i){
+function parseCollada(i) {
 
   colladaImages = new Map(); // stores all images used by textures in this Collada
   colladaTextures = new Map(); // stores all textures used by this Collada
 
   let element = iterator.next();
 
-  if(element.done){
+  if (element.done) {
     divMessages.innerHTML = 'done converting<br>' + divMessages.innerHTML;
     return;
   }
@@ -53,7 +53,7 @@ function parseCollada(i){
   let collada = xmlParser.parseFromString(element.value[1], 'application/xml');
   let results = collada.evaluate('//dae:library_images/dae:image/dae:init_from/text()',
     collada,
-    function(){
+    function () {
       return 'http://www.collada.org/2005/11/COLLADASchema';
     },
     XPathResult.ANY_TYPE, null
@@ -62,15 +62,15 @@ function parseCollada(i){
   // Store all images (more precisely: the names of the images).
   let node;
   let images = [];
-  while((node = results.iterateNext()) !== null){
+  while ((node = results.iterateNext()) !== null) {
     images.push(node.textContent);
   }
 
   // For each found image we store an IMG element in the THREE.Cache to suppress error messages when
   // Three attempts to load the texture images that are not available.
   // Also we add an uuid to the texture image because we need to store it in the JSON file later on.
-  images.forEach(function(imageName){
-    if(colladaImages.has(imageName) === false){
+  images.forEach(function (imageName) {
+    if (colladaImages.has(imageName) === false) {
       let img = document.createElement('img');
       img.url = imageName;
       img.uuid = THREE.Math.generateUUID();
@@ -81,24 +81,25 @@ function parseCollada(i){
 
   // Parse the Collada into a Threejs model, then we traverse the model to find materials with textures; we
   // add a key 'map' to the material if that material uses a texture
-  colladaLoader.parse(collada, function(collada){
-    //console.log(collada);
+  colladaLoader.parse(collada, function (collada) {
+    // console.log(collada);
     let model = collada.scene;
-    model.scale.set(1,1,1);
+    model.scale.set(1, 1, 1);
     colladaModels.set(colladaName, model);
-    //console.log(model);
+    // console.log(model);
     let json = model.toJSON();
-    if(hasTextures(model)){
+    if (hasTextures(model)) {
       json = addTextures(json);
     }
+    console.log(saveAs);
     saveAs(colladaName + '.json', JSON.stringify(json));
-    setTimeout(function(){
+    setTimeout(function () {
       // clear the caches
       colladaModels.delete(colladaName);
       THREE.Cache.clear();
       colladaImages.clear();
       colladaTextures.clear();
-      //console.log(colladaModels.size);
+      // console.log(colladaModels.size);
       json = null;
       parseCollada(i);
     }, 1);
@@ -106,16 +107,16 @@ function parseCollada(i){
 }
 
 // Adds the keys 'images' and 'textures' to the JSON file
-function addTextures(json){
+function addTextures(json) {
   let materials = json.materials;
-  materials.forEach(function(material){
-    if(colladaTextures.has(material.uuid)){
+  materials.forEach(function (material) {
+    if (colladaTextures.has(material.uuid)) {
       material.map = colladaTextures.get(material.uuid).uuid;
     }
   });
 
   let images = [];
-  colladaImages.forEach(function(image, name){
+  colladaImages.forEach(function (image, name) {
     //console.log(name, image);
     images.push({
       url: name,
@@ -125,25 +126,25 @@ function addTextures(json){
   });
 
   let textures = [];
-  colladaTextures.forEach(function(texture, uuid){
+  colladaTextures.forEach(function (texture, uuid) {
     //console.log(uuid, texture);
     let obj = {
       uuid: texture.uuid,
       image: texture.image.uuid
     };
-    if(texture.repeat){
+    if (texture.repeat) {
       obj.repeat = [texture.repeat.x, texture.repeat.y];
     }
-    if(texture.minFilter){
+    if (texture.minFilter) {
       obj.minFilter = threeConstants[texture.minFilter];
     }
-    if(texture.magFilter){
+    if (texture.magFilter) {
       obj.magFilter = threeConstants[texture.magFilter];
     }
-    if(texture.anisotropy){
+    if (texture.anisotropy) {
       obj.anisotropy = texture.anisotropy;
     }
-    if(texture.wrapS){
+    if (texture.wrapS) {
       obj.wrap = [threeConstants[texture.wrapS], threeConstants[texture.wrapT]];
     }
     textures.push(obj);
@@ -156,13 +157,13 @@ function addTextures(json){
 }
 
 
-function hasTextures(model){
+function hasTextures(model) {
   let t = false;
-  model.traverse(function(child){
-    if(child.material && child.material.map) {
+  model.traverse(function (child) {
+    if (child.material && child.material.map) {
       // We store every material that has a texture by its uuid so we can easily find it when we are
       // adding the textures to the JSON file.
-      if(colladaTextures.has(child.material.uuid) === false){
+      if (colladaTextures.has(child.material.uuid) === false) {
         colladaTextures.set(child.material.uuid, child.material.map);
       }
       t = true;
@@ -172,13 +173,26 @@ function hasTextures(model){
 }
 
 
-function saveAs(filename, data){
-  let blob = new Blob([data], {type: 'text/plain'});
-  let objectURL = URL.createObjectURL(blob);
-  let link = document.createElement('a');
+function saveAs(filename, data) {
+  // let blob = new Blob([data], { type: 'text/plain' });
+  // let objectURL = URL.createObjectURL(blob);
+  // let link = document.createElement('a');
 
-  link.href = objectURL;
-  link.download = filename;
-  link.target = '_blank';
-  link.click();
+  // link.href = objectURL;
+  // link.download = filename;
+  // link.target = '_blank';
+  // link.click();
+
+  // from: https://code.sololearn.com/Wde1it1cKxXk/#html
+  var a = document.createElement("a");
+  document.body.appendChild(a);
+  a.style = "display: none";
+
+  var json = JSON.stringify(data),
+      blob = new Blob([data], {type: "text/plain;charset=utf-8"}),
+      url = window.URL.createObjectURL(blob);
+  a.href = url;
+  a.download = filename;
+  a.click();
+  window.URL.revokeObjectURL(url);
 }
