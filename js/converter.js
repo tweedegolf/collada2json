@@ -76,6 +76,7 @@ function parseCollada(i) {
       img.uuid = THREE.Math.generateUUID();
       THREE.Cache.add(baseUrl + imageName, img);
       colladaImages.set(imageName, img);
+      // console.log(imageName);
     }
   });
 
@@ -91,7 +92,7 @@ function parseCollada(i) {
     if (hasTextures(model)) {
       json = addTextures(json);
     }
-    console.log(saveAs);
+    // console.log(saveAs);
     saveAs(colladaName + '.json', JSON.stringify(json));
     setTimeout(function () {
       // clear the caches
@@ -127,7 +128,7 @@ function addTextures(json) {
 
   let textures = [];
   colladaTextures.forEach(function (texture, uuid) {
-    //console.log(uuid, texture);
+    console.log(uuid, texture);
     let obj = {
       uuid: texture.uuid,
       image: texture.image.uuid
@@ -160,6 +161,7 @@ function addTextures(json) {
 function hasTextures(model) {
   let t = false;
   model.traverse(function (child) {
+    console.log(child.material, THREE.MeshFaceMaterial);
     if (child.material && child.material.map) {
       // We store every material that has a texture by its uuid so we can easily find it when we are
       // adding the textures to the JSON file.
@@ -189,8 +191,8 @@ function saveAs(filename, data) {
   a.style = "display: none";
 
   var json = JSON.stringify(data),
-      blob = new Blob([data], {type: "text/plain;charset=utf-8"}),
-      url = window.URL.createObjectURL(blob);
+    blob = new Blob([data], { type: "text/plain;charset=utf-8" }),
+    url = window.URL.createObjectURL(blob);
   a.href = url;
   a.download = filename;
   a.click();
