@@ -1,4 +1,4 @@
-###Collada to JSON converter
+# Collada to JSON converter
 
 The tool runs in a browser and converts Colladas to Threejs' own JSON format. The resulting JSON file will be downloaded to your hard disk. Textures are supported.
 
