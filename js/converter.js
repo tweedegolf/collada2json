@@ -10,9 +10,11 @@ let colladaTextures;
 let xmlParser;
 let iterator;
 let cache;
-let baseUrl;
+// let baseUrl = 'local/';
+let baseUrl; // must be undefined!
 let divMessages;
 
+THREE.Cache.enabled = true;
 
 export default function setupConverter() {
   colladaLoader = new THREE.ColladaLoader();
@@ -61,15 +63,17 @@ function parseCollada(i) {
 
   // Store all images (more precisely: the names of the images).
   let node;
-  let images = [];
+  let imageNames = [];
   while ((node = results.iterateNext()) !== null) {
-    images.push(node.textContent);
+    // console.log(node.parentNode.parentNode.parentNode);
+    imageNames.push(node.textContent);
   }
 
   // For each found image we store an IMG element in the THREE.Cache to suppress error messages when
   // Three attempts to load the texture images that are not available.
   // Also we add an uuid to the texture image because we need to store it in the JSON file later on.
-  images.forEach(function (imageName) {
+  const images = [];
+  imageNames.forEach(function (imageName) {
     if (colladaImages.has(imageName) === false) {
       let img = document.createElement('img');
       img.url = imageName;
@@ -77,8 +81,14 @@ function parseCollada(i) {
       THREE.Cache.add(baseUrl + imageName, img);
       colladaImages.set(imageName, img);
       // console.log(imageName);
+      images.push({
+        url: imageName,
+        name: imageName,
+        uuid: img.uuid
+      })
     }
   });
+  // console.log(images);
 
   // Parse the Collada into a Threejs model, then we traverse the model to find materials with textures; we
   // add a key 'map' to the material if that material uses a texture
@@ -89,9 +99,11 @@ function parseCollada(i) {
     colladaModels.set(colladaName, model);
     // console.log(model);
     let json = model.toJSON();
-    if (hasTextures(model)) {
-      json = addTextures(json);
-    }
+    console.log(json);
+    json.images = images;
+    // if (hasTextures(model)) {
+    //   json = addTextures(json);
+    // }
     // console.log(saveAs);
     saveAs(colladaName + '.json', JSON.stringify(json));
     setTimeout(function () {
@@ -116,44 +128,37 @@ function addTextures(json) {
     }
   });
 
-  let images = [];
-  colladaImages.forEach(function (image, name) {
-    //console.log(name, image);
-    images.push({
-      url: name,
-      name: name,
-      uuid: image.uuid
+
+  setTimeout(() => {
+    let textures = [];
+    colladaTextures.forEach(function (texture, uuid) {
+      console.log(uuid, texture);
+      let obj = {
+        uuid: texture.uuid,
+        image: texture.image.uuid
+      };
+      if (texture.repeat) {
+        obj.repeat = [texture.repeat.x, texture.repeat.y];
+      }
+      if (texture.minFilter) {
+        obj.minFilter = threeConstants[texture.minFilter];
+      }
+      if (texture.magFilter) {
+        obj.magFilter = threeConstants[texture.magFilter];
+      }
+      if (texture.anisotropy) {
+        obj.anisotropy = texture.anisotropy;
+      }
+      if (texture.wrapS) {
+        obj.wrap = [threeConstants[texture.wrapS], threeConstants[texture.wrapT]];
+      }
+      textures.push(obj);
     });
-  });
 
-  let textures = [];
-  colladaTextures.forEach(function (texture, uuid) {
-    console.log(uuid, texture);
-    let obj = {
-      uuid: texture.uuid,
-      image: texture.image.uuid
-    };
-    if (texture.repeat) {
-      obj.repeat = [texture.repeat.x, texture.repeat.y];
-    }
-    if (texture.minFilter) {
-      obj.minFilter = threeConstants[texture.minFilter];
-    }
-    if (texture.magFilter) {
-      obj.magFilter = threeConstants[texture.magFilter];
-    }
-    if (texture.anisotropy) {
-      obj.anisotropy = texture.anisotropy;
-    }
-    if (texture.wrapS) {
-      obj.wrap = [threeConstants[texture.wrapS], threeConstants[texture.wrapT]];
-    }
-    textures.push(obj);
-  });
+    // json.images = images;
+    json.textures = textures;
 
-  json.images = images;
-  json.textures = textures;
-
+  }, 0);
   return json;
 }
 
@@ -161,7 +166,7 @@ function addTextures(json) {
 function hasTextures(model) {
   let t = false;
   model.traverse(function (child) {
-    console.log(child.material, THREE.MeshFaceMaterial);
+    console.log('TEX', child.material);
     if (child.material && child.material.map) {
       // We store every material that has a texture by its uuid so we can easily find it when we are
       // adding the textures to the JSON file.
