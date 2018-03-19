@@ -1,17 +1,14 @@
-'use strict';
-
 import getCache from './cache.js';
 import threeConstants from './three_constants.js';
 
 let colladaLoader;
 let colladaModels;
-let colladaImages;
 let xmlParser;
 let iterator;
 let cache;
-// let baseUrl = 'local/';
-let baseUrl; // must be undefined!
+let baseUrl;
 let divMessages;
+
 
 THREE.Cache.enabled = true;
 
@@ -36,22 +33,19 @@ function parseColladas() {
 
 // parse one single Collada
 function parseCollada(i) {
-
-  colladaImages = new Map(); // stores all images used by textures in this Collada
-
-  let element = iterator.next();
+  const element = iterator.next();
 
   if (element.done) {
     divMessages.innerHTML = 'done converting<br>' + divMessages.innerHTML;
     return;
   }
-  let colladaName = element.value[0];
+  const colladaName = element.value[0];
 
   divMessages.innerHTML = `#${++i}: ${colladaName}<br> ${divMessages.innerHTML}`;
 
   // Parse the XML of the Collada and find all the images that are used in textures.
-  let collada = xmlParser.parseFromString(element.value[1], 'application/xml');
-  let results = collada.evaluate('//dae:library_images/dae:image/dae:init_from/text()',
+  const collada = xmlParser.parseFromString(element.value[1], 'application/xml');
+  const results = collada.evaluate('//dae:library_images/dae:image/dae:init_from/text()',
     collada,
     function () {
       return 'http://www.collada.org/2005/11/COLLADASchema';
@@ -61,9 +55,8 @@ function parseCollada(i) {
 
   // Store all images (more precisely: the names of the images).
   let node;
-  let imageNames = [];
+  const imageNames = [];
   while ((node = results.iterateNext()) !== null) {
-    // console.log(node.parentNode.parentNode.parentNode);
     imageNames.push(node.textContent);
   }
 
@@ -72,21 +65,16 @@ function parseCollada(i) {
   // Also we add an uuid to the texture image because we need to store it in the JSON file later on.
   const images = [];
   imageNames.forEach(function (imageName) {
-    if (colladaImages.has(imageName) === false) {
-      let img = document.createElement('img');
-      img.url = imageName;
-      img.uuid = THREE.Math.generateUUID();
-      THREE.Cache.add(baseUrl + imageName, img);
-      colladaImages.set(imageName, img);
-      // console.log(imageName);
-      images.push({
-        url: imageName,
-        name: imageName,
-        uuid: img.uuid
-      })
-    }
+    let img = document.createElement('img');
+    img.url = imageName;
+    img.uuid = THREE.Math.generateUUID();
+    THREE.Cache.add(baseUrl + imageName, img);
+    images.push({
+      url: imageName,
+      name: imageName,
+      uuid: img.uuid
+    });
   });
-  // console.log(images);
 
   // Parse the Collada into a Threejs model, then we traverse the model to find materials with textures; we
   // add a key 'map' to the material if that material uses a texture
@@ -96,23 +84,22 @@ function parseCollada(i) {
     model.scale.set(1, 1, 1);
     colladaModels.set(colladaName, model);
     // console.log(model);
-    let json = model.toJSON();
-    console.log(json);
-    json.images = images;
-    // console.log(saveAs);
-    saveAs(colladaName + '.json', JSON.stringify(json));
-    setTimeout(function () {
+
+    setTimeout(() => {
+      let json = model.toJSON();
+      json.images = images;
+      saveAs(colladaName + '.json', JSON.stringify(json));
+
       // clear the caches
       colladaModels.delete(colladaName);
       THREE.Cache.clear();
-      colladaImages.clear();
       // console.log(colladaModels.size);
       json = null;
       parseCollada(i);
-    }, 1);
+
+    }, 0);
   });
 }
-
 
 
 function saveAs(filename, data) {

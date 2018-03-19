@@ -1,7 +1,5 @@
-'use strict';
-
 import createLoader from './loader';
 
-window.onload = function(){
+window.onload = function () {
   createLoader();
 };
