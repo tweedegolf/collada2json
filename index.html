@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
   <title>collada to json converter</title>
   <style>
-    html{
+    html {
       height: 100%;
     }
+
     body {
       margin: 0px;
       overflow: hidden;
@@ -15,49 +17,60 @@
       font-size: 15px;
       height: 100%;
     }
+
     #canvas3d {
       height: 100%;
     }
-    #controls{
+
+    #controls {
       position: absolute;
     }
-    #message{
+
+    #message {
       background-color: black;
       color: white;
       padding: 4px;
       float: right;
     }
-    #fileSelect{
+
+    #fileSelect {
       padding: 4px;
       float: left;
     }
-    #help{
+
+    #help {
       padding: 4px;
       font-size: 85%;
       border-bottom: 1px dotted #dddddd;
     }
-    #help2{
+
+    #help2 {
       float: left;
       padding: 4px;
       font-size: 85%;
     }
-    a{
+
+    a {
       /*text-decoration: none;*/
     }
-    ul{
+
+    ul {
       margin: 2px;
     }
-    #canvas_collada{
+
+    #canvas_collada {
       background-color: red;
       width: 50%;
       float: left;
     }
-    #canvas_json{
+
+    #canvas_json {
       background-color: blue;
       width: 50%;
       float: left;
     }
-    .canvas-label{
+
+    .canvas-label {
       width: 50%;
       position: absolute;
       bottom: 40px;
@@ -65,11 +78,13 @@
       font-size: 20px;
       text-align: center;
     }
-    .canvas-label-right{
+
+    .canvas-label-right {
       right: 0px;
     }
   </style>
 </head>
+
 <body>
   <div id="controls">
     <div id="help">
@@ -92,17 +107,15 @@
   <div class="canvas-label">Collada</div>
   <div class="canvas-label canvas-label-right">JSON</div>
 
-  <script src="lib/threejs/three.js"></script>
-  <script src="lib/threejs/OrbitControls.js"></script>
-  <script src="lib/threejs/ColladaLoader.js"></script>
-  <script src="lib/threejs/ObjectLoader2.js"></script>
   <script src="build/build.js"></script>
   <script>
-    if(location.hostname.indexOf('tweedegolf') != -1) {
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    if (location.hostname.indexOf('tweedegolf') != -1) {
+      (function (i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+          (i[r].q = i[r].q || []).push(arguments)
+        }, i[r].l = 1 * new Date(); a = s.createElement(o),
+          m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+      })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
 
       ga('create', 'UA-2008962-1', 'auto');
       ga('send', 'pageview');
@@ -110,4 +123,5 @@
   </script>
 
 </body>
+
 </html>

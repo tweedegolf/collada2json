@@ -1,9 +1,7 @@
-'use strict';
-
 import setupColladaMethods from './collada_methods.js';
 import getCache from './cache.js';
 
-export default function createLoader(){
+export default function createLoader() {
 
   let cache = getCache();
   let fileSelect = document.getElementById('fileSelect');
@@ -15,7 +13,7 @@ export default function createLoader(){
   let divMessage = document.getElementById('message');
 
 
-  fileElem.onchange = function(e){
+  fileElem.onchange = function (e) {
     cache.clear();
     fileList = e.target.files;
     numFiles = fileList.length;
@@ -40,17 +38,17 @@ export default function createLoader(){
 
 
   fileSelect.addEventListener('click', function (e) {
-    if(fileElem) {
+    if (fileElem) {
       fileElem.click();
     }
     e.preventDefault(); // prevent navigation to '#'
   }, false);
 
 
-  fileReader.addEventListener('load', function(){
-    if(fileType === 'image'){
+  fileReader.addEventListener('load', function () {
+    if (fileType === 'image') {
       cache.addTexture(fileName, fileReader.result);
-    }else if(fileType === 'xml'){
+    } else if (fileType === 'xml') {
       cache.addCollada(fileName, fileReader.result);
     }
 
@@ -58,10 +56,10 @@ export default function createLoader(){
   }, false);
 
 
-  function loadFile(){
+  function loadFile() {
     let file;
 
-    if(++currentIndex >= numFiles){
+    if (++currentIndex >= numFiles) {
       colladaMethods.parse();
       return;
     }
@@ -71,13 +69,13 @@ export default function createLoader(){
     fileType = file.type;
     divMessage.innerHTML = 'loading ' + fileName;
 
-    if(fileType.indexOf('image') !== -1){
+    if (fileType.indexOf('image') !== -1) {
       fileType = 'image';
       fileReader.readAsDataURL(file);
-    }else if(pattern.test(fileName)){
+    } else if (pattern.test(fileName)) {
       fileType = 'xml';
       fileReader.readAsText(file);
-    }else{
+    } else {
       loadFile();
     }
   }

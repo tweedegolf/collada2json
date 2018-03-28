@@ -1,48 +1,45 @@
-'use strict';
-
 let cache;
 
-export default function getCache(){
-
-  if(cache !== undefined){
+export default function getCache() {
+  if (cache !== undefined) {
     return cache;
   }
 
-  let textures = new Map();
-  let colladaModels = new Map();
-  let jsonModels = new Map();
+  const textures = new Map();
+  const colladaModels = new Map();
+  const jsonModels = new Map();
 
 
   cache = {
-    addJsonModel: function(key, value){
+    addJsonModel(key, value) {
       jsonModels.set(key, value);
     },
-    addCollada: function(key, value){
+    addCollada(key, value) {
       colladaModels.set(key, value);
     },
-    addTexture: function(key, value){
+    addTexture(key, value) {
       textures.set(key, value);
     },
-    getColladas: function(){
+    getColladas() {
       return colladaModels;
     },
-    getJsonModels: function(){
+    getJsonModels() {
       return colladaModels;
     },
-    getColladaModel: function(id){
+    getColladaModel(id) {
       return colladaModels.get(id);
     },
-    getJsonModel: function(id){
+    getJsonModel(id) {
       return jsonModels.get(id);
     },
-    getTextures: function(){
+    getTextures() {
       return textures;
     },
-    clear: function(){
+    clear() {
       textures.clear();
       jsonModels.clear();
       colladaModels.clear();
-    }
+    },
   };
 
   return cache;

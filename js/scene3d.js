@@ -1,7 +1,5 @@
-'use strict';
-
-//import THREE from 'three';
-//import OrbitControls from 'lib/OrbitControls';
+import THREE from 'three';
+import OrbitControls from './lib/orbit_controls';
 
 export default function init() {
 
@@ -11,7 +9,7 @@ export default function init() {
 
   scene = new THREE.Scene();
 
-  renderer = new THREE.WebGLRenderer({autoClear:true, antialias:true, alpha:true});
+  renderer = new THREE.WebGLRenderer({ autoClear: true, antialias: true, alpha: true });
   renderer.setClearColor(0xffffff, 1);
   renderer.shadowMapEnabled = true;
   renderer.shadowMapSoft = true;
@@ -21,7 +19,7 @@ export default function init() {
   camera.position.z = 500;
   camera.position.x = 0;
   camera.position.y = 300;
-  camera.lookAt(new THREE.Vector3(0,0,0));
+  camera.lookAt(new THREE.Vector3(0, 0, 0));
 
   spot = new THREE.SpotLight(0xffffff, 1);
   spot.position.set(300, 300, 300);
@@ -35,8 +33,8 @@ export default function init() {
   spot.shadowMapHeight = 2048;
   scene.add(spot);
 
-  world = new THREE.Mesh(new THREE.PlaneBufferGeometry(200, 200, 10, 10), new THREE.MeshBasicMaterial({opacity: 0.5, color: 0x003300}));
-  world.rotation.x -= Math.PI/2;
+  world = new THREE.Mesh(new THREE.PlaneBufferGeometry(200, 200, 10, 10), new THREE.MeshBasicMaterial({ opacity: 0.5, color: 0x003300 }));
+  world.rotation.x -= Math.PI / 2;
   world.position.y = -50;
   world.position.z = 50;
   world.receiveShadow = true;
@@ -47,12 +45,12 @@ export default function init() {
 
   controls = new THREE.OrbitControls(camera, renderer.domElement);
   controls.keys = {};
-  controls.addEventListener('change', function(){
+  controls.addEventListener('change', function () {
     render();
   });
 
 
-  function resize(width, height){
+  function resize(width, height) {
     //console.log(width,height);
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
@@ -61,25 +59,25 @@ export default function init() {
   }
 
 
-  function render(){
+  function render() {
     renderer.render(scene, camera);
   }
 
 
-  function clear(){
-    while(world.children.length > 0){
+  function clear() {
+    while (world.children.length > 0) {
       world.remove(world.children[0]);
     }
     render();
   }
 
 
-  return{
+  return {
     clear: clear,
     render: render,
     resize: resize,
     domElement: renderer.domElement,
-    add: function(model){
+    add: function (model) {
       clear();
       world.add(model);
       render();
