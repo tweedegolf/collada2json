@@ -1,22 +1,30 @@
 {
-  "name": "collada-to-json-converter",
-  "private": true,
-  "devDependencies": {
-    "babel-core": "^6.26.0",
-    "babel-preset-env": "^1.6.1",
-    "babel-preset-stage-0": "^6.24.1",
-    "babelify": ">=4.0.0",
-    "browserify": ">=12.0.0",
-    "local-web-server": "^0.5.16",
-    "watchify": ">=3.6.0"
-  },
-  "engines": {
-    "node": "0.10.x"
-  },
-  "scripts": {
-    "start": "ws",
-    "build": "browserify js/app.js -t [ babelify --sourceMapRelative ./js ] --debug | exorcist build/build.js.map > build/build.js ",
-    "watch": "watchify js/* -t babelify -o build/build.js --debug --verbose | ws"
-  },
-  "dependencies": {}
+    "name": "collada-to-json-converter",
+    "private": false,
+    "version": "1.0.0",
+    "devDependencies": {
+        "babel-core": "^6.26.0",
+        "babel-preset-env": "^1.6.1",
+        "babel-preset-stage-0": "^6.24.1",
+        "babelify": "^8.0.0",
+        "browserify": "^16.1.1",
+        "eslint": "^4.19.1",
+        "eslint-config-airbnb": "^16.1.0",
+        "eslint-plugin-import": "^2.9.0",
+        "eslint-plugin-jsx-a11y": "^6.0.3",
+        "eslint-plugin-react": "^7.7.0",
+        "local-web-server": "^2.5.1",
+        "watchify": "^3.11.0"
+    },
+    "engines": {
+        "node": "0.10.x"
+    },
+    "scripts": {
+        "start": "ws",
+        "build": "browserify js/app.js -t [ babelify --sourceMapRelative ./js ] --debug | exorcist build/build.js.map > build/build.js ",
+        "watch": "watchify js/app.js -t babelify -o build/build.js --debug --verbose | ws"
+    },
+    "dependencies": {
+        "three": "^0.75.0"
+    }
 }

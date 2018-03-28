@@ -1,28 +1,25 @@
-'use strict';
-
 let cache;
 
-export default function getCache(){
-
-  if(cache !== undefined){
+export default function getCache() {
+  if (cache !== undefined) {
     return cache;
   }
 
-  let colladaModels = new Map();
+  const colladaModels = new Map();
 
   cache = {
-    addCollada: function(key, value){
+    addCollada(key, value) {
       colladaModels.set(key, value);
     },
-    getColladas: function(){
+    getColladas() {
       return colladaModels;
     },
-    getColladaModel: function(id){
+    getColladaModel(id) {
       return colladaModels.get(id);
     },
-    clear: function(){
+    clear() {
       colladaModels.clear();
-    }
+    },
   };
 
   return cache;
