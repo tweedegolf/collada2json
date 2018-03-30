@@ -82,6 +82,13 @@
     .canvas-label-right {
       right: 0px;
     }
+
+    #download-link {
+      font-weight: normal;
+      font-size: 18px;
+      color: black;
+      display: none;
+    }
   </style>
 </head>
 
@@ -105,7 +112,10 @@
   <div id="canvas_collada"></div>
   <div id="canvas_json"></div>
   <div class="canvas-label">Collada</div>
-  <div class="canvas-label canvas-label-right">JSON</div>
+  <div class="canvas-label canvas-label-right">
+    <span>JSON</span>
+    <a href="#" id="download-link">download file</a>
+  </div>
 
   <script src="build/build.js"></script>
   <script>

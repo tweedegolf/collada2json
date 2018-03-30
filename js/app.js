@@ -1,6 +1,7 @@
 import createScene3D from './scene3d';
 import createLoader from './loader';
 import getCache from './cache';
+import saveAs from './util/save_as';
 
 let sceneCollada;
 let sceneJson;
@@ -15,6 +16,7 @@ function resize() {
 
 window.onload = () => {
   const divMessage = document.getElementById('message');
+  const linkDownload = document.getElementById('download-link');
 
   sceneCollada = createScene3D();
   document.getElementById('canvas_collada').appendChild(sceneCollada.domElement);
@@ -25,24 +27,29 @@ window.onload = () => {
   createLoader();
 
   document.addEventListener('converting', (e) => {
-    const type = e.detail.type;
+    // const { detail: { type } } = e;
+    const { detail: { model, json, type } } = e;
     switch (type) {
       case 'start':
-        divMessage.innerHTML = `converting ${e.detail.model}`;
+        linkDownload.style.display = 'none';
+        divMessage.innerHTML = `converting ${model}`;
         break;
       case 'ready':
-        divMessage.innerHTML = `${e.detail.model} converted`;
-        cache = getCache();
-        sceneJson.add(cache.getJsonModel(e.detail.model));
-        sceneCollada.add(cache.getColladaModel(e.detail.model));
-        break;
-      case 'done':
         divMessage.innerHTML = 'done';
+        // add the models
         cache = getCache();
-        // sceneJson.clear();
-        // sceneCollada.clear();
+        sceneJson.add(cache.getJsonModel(model));
+        sceneCollada.add(cache.getColladaModel(model));
+        // create and show the download link
+        linkDownload.style.display = 'inline-block';
+        linkDownload.onclick = (e1) => {
+          saveAs(`${model}.json`, JSON.stringify(json));
+          e1.preventDefault();
+        };
         cache.clear();
         break;
+      default:
+        divMessage.innerHTML = 'unrecognized custom event';
     }
   });
 

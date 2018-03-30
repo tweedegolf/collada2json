@@ -4022,7 +4022,7 @@ thenify-all@^1.0.0:
   dependencies:
     any-promise "^1.0.0"
 
-three@^0.75.0:
+three@0.75.0:
   version "0.75.0"
   resolved "https://registry.yarnpkg.com/three/-/three-0.75.0.tgz#944de0c68a9b1ba2be7a829c0511891a615eb500"
 

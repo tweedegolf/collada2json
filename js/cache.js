@@ -9,7 +9,6 @@ export default function getCache() {
   const colladaModels = new Map();
   const jsonModels = new Map();
 
-
   cache = {
     addJsonModel(key, value) {
       jsonModels.set(key, value);
