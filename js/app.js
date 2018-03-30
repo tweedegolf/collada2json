@@ -38,6 +38,7 @@ window.onload = () => {
         break;
       case 'done':
         divMessage.innerHTML = 'done';
+        cache = getCache();
         // sceneJson.clear();
         // sceneCollada.clear();
         cache.clear();
