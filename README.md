@@ -4,9 +4,9 @@ The tool runs in a browser and converts Colladas to Threejs' own JSON format. Th
 
 There are 2 versions, this is the preview version. It shows a preview of the model both as Collada and as JSON. There is a headless version as well that just converts the Collada, see this [repository](https://github.com/tweedegolf/collada2json_headless)).
 
-The first version is suitable if you want to convert only one or a few models and check the models side by side for possible conversion errors. If you want to convert a large number of Colladas you’d better use the second version.
+The preview version is suitable if you want to convert only one or a few models and check the models side by side for possible conversion errors. If you want to convert a large number of Colladas you’d better use the headless version.
 
-You can checkout the code and run the tool on your local computer, or you can use the headless version directly:
+You can checkout the code and run the tool on your local computer, or you can use live versions directly from these urls:
 
  - [preview version](https://tweedegolf.github.io/collada2json)
  - [headless version](https://tweedegolf.github.io/collada2json_headless)
