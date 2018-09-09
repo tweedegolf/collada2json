@@ -1,4 +1,4 @@
-import THREE from 'three';
+import * as THREE from 'three';
 import './lib/orbit_controls';
 
 export default function init() {
@@ -13,9 +13,9 @@ export default function init() {
 
   const renderer = new THREE.WebGLRenderer({ autoClear: true, antialias: true, alpha: true });
   renderer.setClearColor(0xffffff, 1);
-  renderer.shadowMapEnabled = true;
-  renderer.shadowMapSoft = true;
-  renderer.shadowMapType = THREE.PCFSoftShadowMap;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.soft = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
   function render() {
     renderer.render(scene, camera);
@@ -24,13 +24,12 @@ export default function init() {
   const spot = new THREE.SpotLight(0xffffff, 1);
   spot.position.set(300, 300, 300);
   spot.target.position.set(0, 0, 0);
-  spot.shadowCameraNear = 1;
-  spot.shadowCameraFar = 1024;
+  spot.shadow.camera.near = 1;
+  spot.shadow.camera.far = 1024;
   spot.castShadow = true;
-  spot.shadowDarkness = 0.3;
-  spot.shadowBias = 0.0001;
-  spot.shadowMapWidth = 2048;
-  spot.shadowMapHeight = 2048;
+  spot.shadow.bias = 0.0001;
+  spot.shadow.mapSize.width = 2048;
+  spot.shadow.mapSize.height = 2048;
   scene.add(spot);
 
   const world = new THREE.Mesh(

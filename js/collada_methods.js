@@ -1,4 +1,4 @@
-import THREE from 'three';
+import * as THREE from 'three';
 import './lib/collada_loader';
 // import './lib/object_loader_r75';
 import getCache from './cache';
@@ -33,6 +33,8 @@ const parseCollada = () => {
     XPathResult.ANY_TYPE, null
   );
 
+  // console.log(results.iterateNext());
+
   // For each found image we store an IMG element in the THREE.Cache to suppress error messages when
   // Three attempts to load the texture images that are not available. Also we add an uuid to the
   // texture image because we need to store it in the JSON file later on.
@@ -57,33 +59,35 @@ const parseCollada = () => {
       loop = false;
     }
   }
+  // console.log(cache.getTextures());
 
-  colladaLoader.parse(collada, (c) => {
-    setTimeout(() => {
-      const colladaModel = c.scene;
-      colladaModel.scale.set(1, 1, 1);
-      colladaModels.set(colladaName, colladaModel);
-      fixTextures(colladaModel);
+  const parsed = colladaLoader.parse(element.value[1]);
+  // console.log(parsed);
 
-      // const loader = new THREE.ObjectLoaderR75();
-      const loader = new THREE.ObjectLoader();
-      const json = colladaModel.toJSON();
-      const jsonModel = loader.parse(json);
-      // overwrite the images array with the actual image urls instead of the data URI's
-      json.images = images;
-      jsonModel.scale.set(1, 1, 1);
-      cache.addJsonModel(colladaName, jsonModel);
+  setTimeout(() => {
+    const colladaModel = parsed.scene ? parsed.scene : parsed;
+    colladaModel.scale.set(1, 1, 1);
+    colladaModels.set(colladaName, colladaModel);
+    fixTextures(colladaModel);
 
-      document.dispatchEvent(new CustomEvent('converting', {
-        detail: {
-          type: 'ready',
-          json,
-          model: colladaName,
-        },
-      }));
-      THREE.Cache.clear();
-    }, 0);
-  });
+    // const loader = new THREE.ObjectLoaderR75();
+    const loader = new THREE.ObjectLoader();
+    const json = colladaModel.toJSON();
+    const jsonModel = loader.parse(json);
+    // overwrite the images array with the actual image urls instead of the data URI's
+    json.images = images;
+    jsonModel.scale.set(1, 1, 1);
+    cache.addJsonModel(colladaName, jsonModel);
+
+    document.dispatchEvent(new CustomEvent('converting', {
+      detail: {
+        type: 'ready',
+        json,
+        model: colladaName,
+      },
+    }));
+    THREE.Cache.clear();
+  }, 0);
 };
 
 export default function setupColladaMethods() {

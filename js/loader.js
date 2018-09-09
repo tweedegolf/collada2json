@@ -1,73 +1,31 @@
-import setupColladaMethods from './collada_methods.js';
-import getCache from './cache.js';
+import setupColladaMethods from './collada_methods';
+import getCache from './cache';
 
 export default function createLoader() {
+  const cache = getCache();
+  const fileSelect = document.getElementById('fileSelect');
+  const fileElem = document.getElementById('fileElem');
+  const fileReader = new FileReader();
+  const pattern = /\.dae$/i;
+  let fileList;
+  let numFiles;
+  let currentIndex;
+  let fileType;
+  let fileName;
+  const colladaMethods = setupColladaMethods();
+  const divMessage = document.getElementById('message');
 
-  let cache = getCache();
-  let fileSelect = document.getElementById('fileSelect');
-  let fileElem = document.getElementById('fileElem');
-  let fileReader = new FileReader();
-  let pattern = /\.dae$/i;
-  let fileList, numFiles, currentIndex, fileType, fileName;
-  let colladaMethods = setupColladaMethods();
-  let divMessage = document.getElementById('message');
-
-
-  fileElem.onchange = function (e) {
-    cache.clear();
-    fileList = e.target.files;
-    numFiles = fileList.length;
-    currentIndex = -1;
-    loadFile();
-
-    /*
-    let files = e.target.files;
-    let patternCollada = /\.dae$/;
-    let patternTexture = /(\.png|\.jpg)$/;
-
-    Object.keys(files).forEach(function(key){
-      let file = files[key];
-      if(patternCollada.test(file.name)){
-        colladas.set(file.name, file);
-      }else if(patternTexture.test(file.name)){
-        textures.set(file.name, file);
-      }
-    });
-    */
-  };
-
-
-  fileSelect.addEventListener('click', function (e) {
-    if (fileElem) {
-      fileElem.click();
-    }
-    e.preventDefault(); // prevent navigation to '#'
-  }, false);
-
-
-  fileReader.addEventListener('load', function () {
-    if (fileType === 'image') {
-      cache.addTexture(fileName, fileReader.result);
-    } else if (fileType === 'xml') {
-      cache.addCollada(fileName, fileReader.result);
-    }
-
-    loadFile();
-  }, false);
-
-
-  function loadFile() {
-    let file;
-
-    if (++currentIndex >= numFiles) {
+  const loadFile = () => {
+    currentIndex += 1;
+    if (currentIndex >= numFiles) {
       colladaMethods.parse();
       return;
     }
 
-    file = fileList[currentIndex];
+    const file = fileList[currentIndex];
     fileName = file.name;
     fileType = file.type;
-    divMessage.innerHTML = 'loading ' + fileName;
+    divMessage.innerHTML = `loading ${fileName}`;
 
     if (fileType.indexOf('image') !== -1) {
       fileType = 'image';
@@ -78,5 +36,32 @@ export default function createLoader() {
     } else {
       loadFile();
     }
-  }
+  };
+
+
+  fileElem.onchange = (e) => {
+    cache.clear();
+    fileList = e.target.files;
+    numFiles = fileList.length;
+    currentIndex = -1;
+    loadFile();
+  };
+
+
+  fileSelect.addEventListener('click', (e) => {
+    if (fileElem) {
+      fileElem.click();
+    }
+    e.preventDefault(); // prevent navigation to '#'
+  }, false);
+
+
+  fileReader.addEventListener('load', () => {
+    if (fileType === 'image') {
+      cache.addTexture(fileName, fileReader.result);
+    } else if (fileType === 'xml') {
+      cache.addCollada(fileName, fileReader.result);
+    }
+    loadFile();
+  }, false);
 }

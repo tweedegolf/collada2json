@@ -1,6 +1,6 @@
 /* eslint no-param-reassign: off */
 
-import THREE from 'three';
+import * as THREE from 'three';
 
 const fixTransparentTexture = (material) => {
   material.needsUpdate = true;
@@ -20,14 +20,12 @@ const fixTextures = (model) => {
   model.traverse((child) => {
     // check if the child has a material and if that material has a texture
     if (child.material) {
-      // child.material.emissive = new THREE.Color(0, 0, 0);
-      // child.material.map.wrapS = THREE.ClampToEdgeWrapping;
-      // child.material.map.wrapT = THREE.ClampToEdgeWrapping;
-      // child.material.map.minFilter = THREE.LinearFilter;
       if (child.material.map) {
         child.material.needsUpdate = true;
         fixTransparentTexture(child.material);
+        console.log(child.material.map);
       } else if (child.material.type === 'MultiMaterial') {
+        console.error('Oh no, no MultiMaterials anymore!');
         child.material.materials.forEach(fixTransparentTexture);
       }
     }

@@ -1,5 +1,6 @@
-import getCache from './cache.js';
-import threeConstants from './three_constants.js';
+import * as THREE from 'three';
+import getCache from './cache';
+import threeConstants from './three_constants';
 
 let colladaLoader;
 let colladaModels;
@@ -16,7 +17,7 @@ export default function setupConverter() {
   divMessages = document.getElementById('messages');
   xmlParser = new DOMParser();
   return {
-    parse: parseColladas
+    parse: parseColladas,
   };
 }
 
@@ -32,33 +33,31 @@ function parseColladas() {
 
 // parse one single Collada
 function parseCollada(i) {
-
   colladaImages = new Map(); // stores all images used by textures in this Collada
   colladaTextures = new Map(); // stores all textures used by this Collada
 
-  let element = iterator.next();
+  const element = iterator.next();
 
   if (element.done) {
-    divMessages.innerHTML = 'done converting<br>' + divMessages.innerHTML;
+    divMessages.innerHTML = `done converting<br>${divMessages.innerHTML}`;
     return;
   }
-  let colladaName = element.value[0];
+  const colladaName = element.value[0];
 
   divMessages.innerHTML = `#${++i}: ${colladaName}<br> ${divMessages.innerHTML}`;
 
   // Parse the XML of the Collada and find all the images that are used in textures.
-  let collada = xmlParser.parseFromString(element.value[1], 'application/xml');
-  let results = collada.evaluate('//dae:library_images/dae:image/dae:init_from/text()',
+  const collada = xmlParser.parseFromString(element.value[1], 'application/xml');
+  const results = collada.evaluate(
+    '//dae:library_images/dae:image/dae:init_from/text()',
     collada,
-    function () {
-      return 'http://www.collada.org/2005/11/COLLADASchema';
-    },
+    () => 'http://www.collada.org/2005/11/COLLADASchema',
     XPathResult.ANY_TYPE, null
   );
 
   // Store all images (more precisely: the names of the images).
   let node;
-  let images = [];
+  const images = [];
   while ((node = results.iterateNext()) !== null) {
     images.push(node.textContent);
   }
@@ -66,9 +65,9 @@ function parseCollada(i) {
   // For each found image we store an IMG element in the THREE.Cache to suppress error messages when
   // Three attempts to load the texture images that are not available.
   // Also we add an uuid to the texture image because we need to store it in the JSON file later on.
-  images.forEach(function (imageName) {
+  images.forEach((imageName) => {
     if (colladaImages.has(imageName) === false) {
-      let img = document.createElement('img');
+      const img = document.createElement('img');
       img.url = imageName;
       img.uuid = THREE.Math.generateUUID();
       THREE.Cache.add(baseUrl + imageName, img);
@@ -78,24 +77,24 @@ function parseCollada(i) {
 
   // Parse the Collada into a Threejs model, then we traverse the model to find materials with textures; we
   // add a key 'map' to the material if that material uses a texture
-  colladaLoader.parse(collada, function (collada) {
-    //console.log(collada);
-    let model = collada.scene;
+  colladaLoader.parse(collada, (collada) => {
+    // console.log(collada);
+    const model = collada.scene;
     model.scale.set(1, 1, 1);
     colladaModels.set(colladaName, model);
-    //console.log(model);
+    // console.log(model);
     let json = model.toJSON();
     if (hasTextures(model)) {
       json = addTextures(json);
     }
-    saveAs(colladaName + '.json', JSON.stringify(json));
-    setTimeout(function () {
+    saveAs(`${colladaName}.json`, JSON.stringify(json));
+    setTimeout(() => {
       // clear the caches
       colladaModels.delete(colladaName);
       THREE.Cache.clear();
       colladaImages.clear();
       colladaTextures.clear();
-      //console.log(colladaModels.size);
+      // console.log(colladaModels.size);
       json = null;
       parseCollada(i);
     }, 1);
@@ -104,29 +103,29 @@ function parseCollada(i) {
 
 // Adds the keys 'images' and 'textures' to the JSON file
 function addTextures(json) {
-  let materials = json.materials;
-  materials.forEach(function (material) {
+  const materials = json.materials;
+  materials.forEach((material) => {
     if (colladaTextures.has(material.uuid)) {
       material.map = colladaTextures.get(material.uuid).uuid;
     }
   });
 
-  let images = [];
-  colladaImages.forEach(function (image, name) {
-    //console.log(name, image);
+  const images = [];
+  colladaImages.forEach((image, name) => {
+    // console.log(name, image);
     images.push({
       url: name,
-      name: name,
-      uuid: image.uuid
+      name,
+      uuid: image.uuid,
     });
   });
 
-  let textures = [];
-  colladaTextures.forEach(function (texture, uuid) {
-    //console.log(uuid, texture);
-    let obj = {
+  const textures = [];
+  colladaTextures.forEach((texture, uuid) => {
+    // console.log(uuid, texture);
+    const obj = {
       uuid: texture.uuid,
-      image: texture.image.uuid
+      image: texture.image.uuid,
     };
     if (texture.repeat) {
       obj.repeat = [texture.repeat.x, texture.repeat.y];
@@ -147,7 +146,7 @@ function addTextures(json) {
   });
 
   json.images = images;
-  json.textures = textures;
+  // json.textures = textures;
 
   return json;
 }
@@ -155,7 +154,7 @@ function addTextures(json) {
 
 function hasTextures(model) {
   let t = false;
-  model.traverse(function (child) {
+  model.traverse((child) => {
     if (child.material && child.material.map) {
       // We store every material that has a texture by its uuid so we can easily find it when we are
       // adding the textures to the JSON file.
@@ -170,9 +169,9 @@ function hasTextures(model) {
 
 
 function saveAs(filename, data) {
-  let blob = new Blob([data], { type: 'text/plain' });
-  let objectURL = URL.createObjectURL(blob);
-  let link = document.createElement('a');
+  const blob = new Blob([data], { type: 'text/plain' });
+  const objectURL = URL.createObjectURL(blob);
+  const link = document.createElement('a');
 
   link.href = objectURL;
   link.download = filename;

@@ -27,6 +27,6 @@
     "watch": "watchify js/app.js -t babelify -o build/build.js --debug --verbose | ws"
   },
   "dependencies": {
-    "three": "0.75.0"
+    "three": "0.96.0"
   }
 }
